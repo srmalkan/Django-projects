@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{%load custom_tags %}
+{% block content %}
+<script src="https://js.stripe.com/v3/"></script>
+<!-- action="/charge" -->
+<style type="text/css">
+    .StripeElement {
+        box-sizing: border-box;
+      
+        height: 40px;
+      
+        padding: 10px 12px;
+      
+        border: 1px solid transparent;
+        border-radius: 4px;
+        background-color: white;
+      
+        box-shadow: 0 1px 3px 0 #e6ebf1;
+        -webkit-transition: box-shadow 150ms ease;
+        transition: box-shadow 150ms ease;
+      }
+      
+      .StripeElement--focus {
+        box-shadow: 0 1px 3px 0 #cfd7df;
+      }
+      
+      .StripeElement--invalid {
+        border-color: #fa755a;
+      }
+      
+      .StripeElement--webkit-autofill {
+        background-color: #fefde5 !important;
+      }
+</style>
+
+<div class="mb-3">
+    <h4 class="text-monospace">Your Cart<span class="float-right badge badge-dark">{{ request.user|cart_count }}</span></h4>
+    <div class="list-group shadow-sm">
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="my-auto font-weight-bold text-secondary">Products</p>
+                <p class="my-auto mr-2 font-weight-bold text-secondary">Price</p>
+            </div>
+        </div>
+        {% for oitem in order.items.all %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="my-auto">{{ oitem.item.itemName }}</p>
+                <p class="my-auto">${{ oitem.get_total_price }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="my-auto text-success">Savings</p>
+                <p class="my-auto text-success">-${{ order.get_grand_saving }}</p>
+            </div>
+        </div>
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="my-auto font-weight-bold">Total(USD)</p>
+                <p class="my-auto font-weight-bold ">${{ order.get_grand_total }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<h4 class="text-monospace">Card Details</h4>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form  method="POST" id="payment-form">
+            {% csrf_token %}
+          <div class="mb-4 shadow">
+            <div id="stripe-card-element" class="">
+              <!-- A Stripe Element will be inserted here. -->
+            </div>
+        
+            <!-- Used to display form errors. -->
+            <div id="stripe-card-errors" role="alert"></div>
+          </div>
+        
+          <button class="btn btn-success float-right" >Submit Payment</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+// Create a Stripe client.
+console.log("Yes");
+var stripe = Stripe('pk_test_51H3flKFdEDGoP81siyxe1abLEyJ3ce1MKEchSQBJ7Cm2BGFtSsSWAKTbAVGk1RL0d4Cap1tLwPqm19LidyUUKI6g001bLUwcgP');
+
+// Create an instance of Elements.
+var elements = stripe.elements();
+
+// Custom styling can be passed to options when creating an Element.
+// (Note that this demo uses a wider set of styles than the guide below.)
+var style = {
+  base: {
+    color: '#32325d',
+    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+    fontSmoothing: 'antialiased',
+    fontSize: '16px',
+    '::placeholder': {
+      color: '#aab7c4'
+    },
+  },
+  invalid: {
+    color: '#fa755a',
+    iconColor: '#fa755a'
+  }
+};
+
+// Create an instance of the card Element.
+var card = elements.create('card', {style: style});
+
+// Add an instance of the card Element into the `card-element` <div>.
+card.mount('#stripe-card-element');
+
+// Handle real-time validation errors from the card Element.
+card.on('change', function(event) {
+  var displayError = document.getElementById('stripe-card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Handle form submission.
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.createToken(card).then(function(result) {
+    if (result.error) {
+      // Inform the user if there was an error.
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server.
+      stripeTokenHandler(result.token);
+    }
+  });
+});
+
+// Submit the form with the token ID.
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+</script>
+{% endblock %}

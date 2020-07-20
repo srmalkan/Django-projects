@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="card bg-dark shadow-lg p-3 mb-5 rounded">
+    <div class="card-body">
+        <h2 class="text-white">
+            Order Summary
+        </h2>
+        <table class="table text-center text-white">
+                <thead class="thead-inverse">   
+                <tr>
+                    <th>#</th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for oitem in order.items.all %}
+                    <tr>
+                        <td >{{ forloop.counter }}</td>
+                        <td >{{ oitem.item.itemName }}</td>
+                        {% if oitem.item.itemDiscountedPrice %}
+                        <td >${{ oitem.item.itemDiscountedPrice }}</td>
+                        {% else %}
+                        <td >${{ oitem.item.itemPrice }}</td>
+                        {% endif %}
+                        <td ><a href="{{ oitem.add_to_order_url }}"><span class="font-weight-bold" style="font-size: 18px;">+</span></a> {{ oitem.quantity }} <a href="{{ oitem.remove_from_order_url }}"><span class="font-weight-bold" style="font-size: 18px;">-</span></a></td>
+                        <td >${{ oitem.get_total_price }}</td>
+                        <td><a href="{{ oitem.delete_item }}"><img style="width: 25px;" src="{% static 'delete.png' %}"></img></a></td>
+                    </tr>
+                {% endfor %}
+                <br>
+                    <tr>
+                        <td colspan="4" class="font-weight-bold" style="font-size: 20px;">Order Total</td>
+                        <td class="font-weight-bold" style="font-size: 20px;">${{ order.get_grand_total }}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+        </table>
+        <div class="float-right">
+            <a class="btn btn-primary text-white font-monospace" href="{% url 'core:itemList' slug='all' %}">Continue Shopping</a>
+            <a class="btn btn-warning text-white font-monospace" href="{% url 'core:checkout' %}">Checkout</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

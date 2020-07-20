@@ -1,0 +1,22 @@
+{% load static %}
+{% load custom_tags %}
+<nav class="navbar navbar-light shadow-sm p-2 mb-2 bg-white rounded">
+    <div class="container">
+        <a class="navbar-brand text-monospace text-primary" href="{% url 'core:itemList' slug='all' %}">EcommerceHere!</a>
+        {% if user.is_authenticated %}
+        <div class="align-right">
+            <a class="" href="{% url 'core:orderSummary' %}" ><span class="badge badge-danger shadow-sm">{{ request.user|cart_count }}</span><img src="{% static 'cart.png' %}" class="w-25 m-2" ></img></a>  
+            <a class="btn btn-primary p-1" href="{% url 'logout' %}" >Logout</a>
+        </div>
+        {% else %}
+            <a class="btn btn-primary p-1" href="{% url 'login' %}">Login</a>
+        {% endif %}
+        <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownId">
+                <a class="dropdown-item" href="#">Action 1</a>
+                <a class="dropdown-item" href="#">Action 2</a>
+            </div>
+        </li> -->
+    </div>
+</nav>

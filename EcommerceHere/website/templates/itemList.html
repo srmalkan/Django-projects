@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            
+            <li class="nav-item {% if 'all' in request.path %}active{% endif %}">
+                <a class="nav-link" href="{% url 'core:itemList' slug='all'%}">All <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {% if 'Clothing' in request.path %}active{% endif %}">
+                <a class="nav-link" href="{% url 'core:itemList' slug='Clothing'%}">Clothing</a>
+            </li>
+            <li class="nav-item {% if 'Electronics' in request.path %}active{% endif %}">
+                <a class="nav-link" href="{% url 'core:itemList' slug='Electronics'%}">Electronics</a>
+            </li>
+            <li class="nav-item {% if 'Sports,Books & More' in request.path %}active{% endif %}">
+                <a class="nav-link" href="{% url 'core:itemList' slug='Sports,Books & More'%}">Sports,Books & More</a>
+            </li>
+            <li class="nav-item {% if 'Home & Furniture' in request.path %}active{% endif %}">
+                <a class="nav-link" href="{% url 'core:itemList' slug='Home & Furniture'%}">Home & Furniture</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+<br>
+<div class="row row-cols-4">
+    {% for item in items %}
+    
+        <div class="col">
+            <div class="card shadow p-3 mb-5 bg-white">
+                <a href="{{ item.get_absolute_url }}">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <img class="card-img-top" src="/media/{{ item.itemImage }}" alt="Card image cap">
+                    </div>
+                </div>
+                </a>
+                <div class="card-body text-center">
+                    <h5 class="card-title" >{{ item.itemName }}</h5>
+                    {% if item.itemDiscountedPrice %}
+                    <p class="card-text"><small class="badge badge-success">{{ item.itemRating }}</small> Rs. {{ item.itemDiscountedPrice }} <del class="text-muted">{{item.itemPrice}}</del></p>
+                    {% else %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    
+    {% endfor %}
+</div>
+    
+
+{% endblock %}

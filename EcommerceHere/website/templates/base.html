@@ -1,0 +1,15 @@
+{% load static %}
+{% load custom_tags %}
+
+{% include 'bootstrap/header.html' %}
+<body class="bg-white">
+    {% include 'navbar.html' %}
+    {% include 'messages.html' %}
+    <br>
+    <div class="container h-100">
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% include 'bootstrap/scripts.html' %}
+</body>
+</html>

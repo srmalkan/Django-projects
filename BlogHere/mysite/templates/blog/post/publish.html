@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Publish{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3>Do you want to publish {{ post.title }} ?</h3>
+        <hr>
+        <form method="POST" >
+            {% csrf_token %}
+            <input type="submit" value="publish" class="btn btn-success">
+        </form>
+    </div>
+</div>
+{% endblock %}

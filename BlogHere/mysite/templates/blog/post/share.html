@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Share a post{% endblock %}
+{% block content %}
+<div class="card">
+   <div class="card-body h-100">
+   {% if sent %}
+   <h1>E-mail successfully sent</h1>
+   <p>
+   "{{ post.title }}" was successfully sent to {{ cd.to }}.
+   </p>
+   {% else %}
+   <h2>Share <span class = 'text-primary'>{{ post.title }}</span></h2>
+   <br>
+   <form action="." method="post">
+   <!-- {{ form.as_p }} -->
+   {% csrf_token %}
+   {% for field in form %}
+      <div class="form-group">
+         <label for="{{ field.id_for_label }}" class ="font-weight-bold">{{ field.label }}</label>
+         {{ field }}
+      </div>
+   {% endfor %}
+      <button type="submit" class="btn btn-primary" value="Send e-mail">Submit</button>
+   </form>
+   {% endif %}
+   </div>
+</div>
+{% endblock %}

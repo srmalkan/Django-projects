@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- <div class="card">
+    <div class="card-body"> -->
+<div class="card shadow-lg p-3 mb-5 bg-white">
+    <div class="card-body">
+        <div class="row row-cols-2">
+            <div class="col-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <img class="card-img-top" src="/media/{{ item.itemImage }}" alt="Card image cap">
+                    </div>
+                </div>
+                <hr class="border-white">
+                <div class="container text-center">
+                    <a class="btn btn-warning p-1 text-white" href="{{ item.add_to_cart_url }}">ADD TO CART</a>
+                    <a class="btn btn-danger text-white p-1" href="{{ item.remove_from_cart_url }}">REMOVE TO CART</a>
+                </div>
+            </div>
+            <div class="col-8">
+                <h4 class="card-title">{{ item.itemName }}</h4>
+                <h5 class="badge badge-warning">{{ item.itemCategory}}</h5>
+                <h6 class="card-text"><span class="badge badge-primary">{{ item.itemRating }} </span>  <span class="text-muted">{{ item.itemRatingNumber }} Ratings</span> </h6>
+                {% if item.itemDiscountedPrice %}
+                <h3 class="card-text">$ {{ item.itemDiscountedPrice }} <small><del class="text-muted">{{item.itemPrice}}</del></small></h3>
+                {% else %}
+                <h3 class="card-text">$ {{ item.itemPrice }} </h3>
+                {% endif %}
+                <br>
+                <h5 class="text-secondary">Desription:</h5>
+                <p>{{ item.itemDescription }}</p>
+                <br>
+                <div class="card p-0 m-0">
+                    <div class="card-body">
+                    <h5>Reviews</h5>
+                    {% if reviews %}
+                        <div class="list-group m-0">
+                            {% for review in reviews %}
+                            <div class="list-group-item list-group-item-action p-2">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-1">{{review.body}}</p>
+                                    <small>reviewed by {{ review.user.username }} on <span class="badge badge-light">{{review.created}}</span></small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <hr>
+                        <div>
+                            <form method="POST" class="h-25">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary float-right" value="">Submit</button>
+                            </form>
+                        </div>
+                        
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- </div>
+</div> -->
+
+{% endblock %}

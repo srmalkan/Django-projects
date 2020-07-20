@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% load custom_tags %}
+{% block content %}
+<h1 class="text-center">
+    Checkout Form
+</h1>
+<hr>
+<div class="row row-cols-2">
+    <div class="col-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="inputAddress">Address</label>
+                      <!-- <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St"> -->
+                      {{form.Address_1|add_classes:"form-control"}}
+                    </div>
+                    <div class="form-group">
+                      <label for="inputAddress2">Address 2</label>
+                      <!-- <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor"> -->
+                      {{form.Address_2|add_classes:"form-control"}}
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="inputCity">country</label>
+                        <!-- <input type="text" class="form-control" id="inputCity"> -->
+                      {{form.state|add_classes:"form-control"}}
+                      </div>
+                      
+                      <div class="form-group col-md-2">
+                        <label for="inputZip">Zip</label>
+                        <!-- <input type="text" class="form-control" id="inputZip"> -->
+                      {{form.zipCode|add_classes:"form-control"}}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-check">
+                        <!-- <input class="form-check-input" type="checkbox" id="gridCheck"> -->
+                        {{form.same_billing_address|add_classes:"form-check-input"}}
+                        <label class="form-check-label" for="gridCheck">
+                          billing address is same as delivery address
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <!-- <input class="form-check-input" type="checkbox" id="gridCheck">
+                         -->
+                        {{form.save_info|add_classes:"form-check-input"}}
+                        <label class="form-check-label" for="gridCheck">
+                          save info for further transactions
+                        </label>
+                      </div>
+                    </div>
+                    {{ form.payment_option.label_tag}}
+                    {{form.payment_option}}
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-primary float-right">Checkout</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <h4 class="text-monospace">Your Cart<span class="float-right badge badge-dark">{{ request.user|cart_count }}</span></h4>
+        <div class="list-group shadow">
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="my-auto font-weight-bold text-secondary">Products</p>
+                    <p class="my-auto mr-2 font-weight-bold text-secondary">Price</p>
+                </div>
+            </div>
+            {% for oitem in order.items.all %}
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="my-auto">{{ oitem.item.itemName }}</p>
+                    <p class="my-auto">${{ oitem.get_total_price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="my-auto text-success">Savings</p>
+                    <p class="my-auto text-success">-${{ order.get_grand_saving }}</p>
+                </div>
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="my-auto font-weight-bold">Total(USD)</p>
+                    <p class="my-auto font-weight-bold ">${{ order.get_grand_total }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
